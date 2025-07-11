@@ -53,5 +53,5 @@ class MainActivity : Activity() {
         }
         return current
     }
-
+// init dev
 }
