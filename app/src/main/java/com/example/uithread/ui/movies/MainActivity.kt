@@ -137,4 +137,6 @@ class MainActivity : Activity(), MoviesView {
         Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show()
         showEmptyState("Ошибка при загрузке")
     }
+
+    //init dev_MVP
 }
