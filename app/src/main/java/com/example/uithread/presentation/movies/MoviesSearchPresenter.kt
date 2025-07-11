@@ -3,6 +3,7 @@ package com.example.uithread.presentation.movies
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
+import com.example.uithread.R
 import com.example.uithread.domain.api.MoviesInteractor
 import com.example.uithread.domain.models.Movie
 import com.example.uithread.util.Creator
@@ -14,6 +15,7 @@ class MoviesSearchPresenter(
     //private val SEARCH_REQUEST_TOKEN = Any()
     private val moviesInteractor = Creator.provideMoviesInteractor(context)
     private val handler = Handler(Looper.getMainLooper())
+    private val movies = mutableListOf<Movie>()
 
     private var lastSearchText: String? = null
 
@@ -28,34 +30,31 @@ class MoviesSearchPresenter(
         handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
     }
 
+
     private fun searchRequest(newSearchText: String) {
         if (newSearchText.isNotEmpty()) {
-            view.showProgressBar(true)
-            view.showPlaceholderMessage(false)
+            view.showLoading()
 
             moviesInteractor.searchMovies(newSearchText, object : MoviesInteractor.MoviesConsumer {
                 override fun consume(foundMovies: List<Movie>?, errorMessage: String?) {
                     handler.post {
-                        view.showProgressBar(false)
-
-                        foundMovies?.let { movies ->
-                            if (movies.isEmpty()) {
-                                view.showEmptyState("Ничего не найдено")
-                            } else {
-                                view.updateMoviesList(movies)
-                                view.showMoviesList(true)
+                        when {
+                            errorMessage != null -> {
+                                view.showError(context.getString(R.string.something_went_wrong))
+                                view.showToast(errorMessage)
+                            }
+                            foundMovies.isNullOrEmpty() -> {
+                                view.showEmpty(context.getString(R.string.nothing_found))
+                            }
+                            else -> {
+                                view.showContent(foundMovies)
                             }
                         }
-
-                        errorMessage?.let { view.showError(it) }
                     }
                 }
             })
-        } else {
-            view.showEmptyState("Введите запрос для поиска")
         }
     }
-
 
 
     companion object {
@@ -63,8 +62,6 @@ class MoviesSearchPresenter(
     }
 
     fun onCreate() {
-        view.showPlaceholderMessage(true)
-        view.changePlaceholderText("Введите запрос для поиска")
     }
 
     fun onDestroy() {
