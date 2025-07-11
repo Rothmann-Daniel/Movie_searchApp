@@ -7,8 +7,9 @@ import com.example.uithread.data.network.RetrofitNetworkClient
 import com.example.uithread.domain.api.MoviesInteractor
 import com.example.uithread.domain.api.MoviesRepository
 import com.example.uithread.domain.impl.MoviesInteractorImpl
-import com.example.uithread.presentation.MoviesSearchController
+import com.example.uithread.presentation.movies.MoviesSearchPresenter
 import com.example.uithread.presentation.PosterController
+import com.example.uithread.presentation.movies.MoviesView
 import com.example.uithread.ui.movies.MoviesAdapter
 
 object Creator {
@@ -20,8 +21,16 @@ object Creator {
         return MoviesInteractorImpl(getMoviesRepository(context))
     }
 
-    fun provideMoviesSearchController(activity: Activity, adapter: MoviesAdapter): MoviesSearchController {
-        return MoviesSearchController(activity, adapter)
+    fun provideMoviesSearchPresenter(
+        moviesView: MoviesView,
+        context: Context,
+        adapter: MoviesAdapter
+    ): MoviesSearchPresenter {
+        return MoviesSearchPresenter(
+            view = moviesView,
+            context = context,
+            adapter = adapter
+        )
     }
 
     fun providePosterController(activity: Activity): PosterController {
