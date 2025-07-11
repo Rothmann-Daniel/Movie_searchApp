@@ -26,10 +26,6 @@ import com.example.uithread.util.MoviesApplication
 
 class MainActivity : Activity(), MoviesView {
 
-    companion object {
-        private const val CLICK_DEBOUNCE_DELAY = 1000L
-
-    }
 
     private var moviesSearchPresenter: MoviesSearchPresenter? = null
 
@@ -46,7 +42,6 @@ class MainActivity : Activity(), MoviesView {
     private var isClickAllowed = true
 
     private val handler = Handler(Looper.getMainLooper())
-
 
 
     private lateinit var queryInput: EditText
@@ -96,11 +91,6 @@ class MainActivity : Activity(), MoviesView {
         moviesSearchPresenter?.onCreate()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        textWatcher?.let { queryInput.removeTextChangedListener(it) }
-        moviesSearchPresenter?.detachView()
-    }
 
     private fun clickDebounce(): Boolean {
         val current = isClickAllowed
@@ -168,5 +158,49 @@ class MainActivity : Activity(), MoviesView {
             is MoviesState.Empty -> showEmpty(state.message)
         }
     }
+
+
+    override fun onStart() {
+        super.onStart()
+        moviesSearchPresenter?.attachView(this)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        moviesSearchPresenter?.attachView(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        moviesSearchPresenter?.detachView()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        moviesSearchPresenter?.detachView()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        moviesSearchPresenter?.detachView()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        textWatcher?.let { queryInput.removeTextChangedListener(it) }
+        moviesSearchPresenter?.detachView()
+        moviesSearchPresenter?.onDestroy()
+
+        if (isFinishing()) {
+            // Очищаем ссылку на Presenter в Application
+            (this.application as? MoviesApplication)?.moviesSearchPresenter = null
+        }
+    }
+
+    companion object {
+        private const val CLICK_DEBOUNCE_DELAY = 1000L
+    }
+
 
 }
