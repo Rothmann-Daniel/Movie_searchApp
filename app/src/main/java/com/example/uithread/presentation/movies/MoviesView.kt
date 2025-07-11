@@ -1,6 +1,7 @@
 package com.example.uithread.presentation.movies
 
 import com.example.uithread.domain.models.Movie
+import com.example.uithread.ui.movies.model.MoviesState
 
 interface MoviesView {
 
@@ -21,5 +22,8 @@ interface MoviesView {
     // Методы одноразовых событий
 
     fun showToast(additionalMessage: String)
+
+    fun render(state: MoviesState)
+
 
 }

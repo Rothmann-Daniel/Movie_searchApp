@@ -19,6 +19,7 @@ import com.example.uithread.ui.poster.PosterActivity
 import com.example.uithread.R
 import com.example.uithread.domain.models.Movie
 import com.example.uithread.presentation.movies.MoviesView
+import com.example.uithread.ui.movies.model.MoviesState
 import com.example.uithread.util.Creator
 
 class MainActivity : Activity(), MoviesView {
@@ -148,5 +149,15 @@ class MainActivity : Activity(), MoviesView {
         moviesList.visibility = if (listVisible) View.VISIBLE else View.GONE
         placeholderMessage.visibility = if (placeholderVisible) View.VISIBLE else View.GONE
     }
+
+    override fun render(state: MoviesState) {
+        when (state) {
+            is MoviesState.Loading -> showLoading()
+            is MoviesState.Content -> showContent(state.movies)
+            is MoviesState.Error -> showError(state.errorMessage)
+            is MoviesState.Empty -> showEmpty(state.message)
+        }
+    }
+
 
 }
