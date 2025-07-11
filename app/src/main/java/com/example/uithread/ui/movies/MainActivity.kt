@@ -18,17 +18,20 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.uithread.ui.poster.PosterActivity
 import com.example.uithread.R
 import com.example.uithread.domain.models.Movie
+import com.example.uithread.presentation.movies.MoviesSearchPresenter
 import com.example.uithread.presentation.movies.MoviesView
 import com.example.uithread.ui.movies.model.MoviesState
 import com.example.uithread.util.Creator
+import com.example.uithread.util.MoviesApplication
 
 class MainActivity : Activity(), MoviesView {
 
     companion object {
         private const val CLICK_DEBOUNCE_DELAY = 1000L
+
     }
 
-    private val movies = ArrayList<Movie>()
+    private var moviesSearchPresenter: MoviesSearchPresenter? = null
 
     private var textWatcher: TextWatcher? = null
 
@@ -45,11 +48,6 @@ class MainActivity : Activity(), MoviesView {
     private val handler = Handler(Looper.getMainLooper())
 
 
-    private val moviesSearchPresenter = Creator.provideMoviesSearchPresenter(
-        moviesView = this,
-        context = this,
-        adapter = adapter,
-    )
 
     private lateinit var queryInput: EditText
     private lateinit var placeholderMessage: LinearLayout
@@ -59,6 +57,17 @@ class MainActivity : Activity(), MoviesView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        moviesSearchPresenter = (this.applicationContext as? MoviesApplication)?.moviesSearchPresenter
+
+        if (moviesSearchPresenter == null) {
+            moviesSearchPresenter = Creator.provideMoviesSearchPresenter(
+                moviesView = this,
+                context = this,
+                adapter = adapter
+            )
+            (this.applicationContext as? MoviesApplication)?.moviesSearchPresenter = moviesSearchPresenter
+        }
 
         placeholderMessage = findViewById(R.id.placeholderMessage)
         queryInput = findViewById(R.id.queryInput)
@@ -73,7 +82,7 @@ class MainActivity : Activity(), MoviesView {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                moviesSearchPresenter.searchDebounce(
+                moviesSearchPresenter?.searchDebounce( // Добавлен безопасный вызов ?.
                     changedText = s?.toString() ?: ""
                 )
             }
@@ -83,13 +92,13 @@ class MainActivity : Activity(), MoviesView {
         }
         textWatcher?.let { queryInput.addTextChangedListener(it) }
 
-        moviesSearchPresenter.onCreate()
+        moviesSearchPresenter?.onCreate()
     }
 
     override fun onDestroy() {
         super.onDestroy()
         textWatcher?.let { queryInput.removeTextChangedListener(it) }
-        moviesSearchPresenter.onDestroy()
+        moviesSearchPresenter?.onDestroy()
     }
 
     private fun clickDebounce(): Boolean {
