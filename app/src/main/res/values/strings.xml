@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">UI Thread</string>
+    <string name="something_went_wrong">something_went_wrong</string>
+    <string name="nothing_found">nothing_found</string>
+</resources>
