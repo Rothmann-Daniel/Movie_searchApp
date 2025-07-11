@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">UI Thread</string>
+    <string name="app_name">Movie_searchApp</string>
     <string name="nothing_found">nothing_found</string>
 
     <!-- Поиск -->

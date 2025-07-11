@@ -19,5 +19,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "UI Thread"
+rootProject.name = "Movie_searchApp"
 include(":app")
