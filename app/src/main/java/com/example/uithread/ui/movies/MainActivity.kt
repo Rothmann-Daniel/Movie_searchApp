@@ -12,6 +12,7 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.uithread.ui.poster.PosterActivity
@@ -118,5 +119,22 @@ class MainActivity : Activity(), MoviesView {
         // Найдите TextView внутри LinearLayout
         val textView = placeholderMessage.findViewById<TextView>(R.id.text_message)
         textView.text = newPlaceholderText
+    }
+
+    override fun updateMoviesList(newMoviesList: List<Movie>) {
+        adapter.updateMovies(newMoviesList) // Делегируем адаптеру
+    }
+
+
+    override fun showEmptyState(message: String) {
+        adapter.updateMovies(emptyList())
+        changePlaceholderText(message)
+        showPlaceholderMessage(true)
+        showMoviesList(false)
+    }
+
+    override fun showError(errorMessage: String) {
+        Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show()
+        showEmptyState("Ошибка при загрузке")
     }
 }
