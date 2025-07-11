@@ -58,16 +58,17 @@ class MainActivity : Activity(), MoviesView {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        moviesSearchPresenter = (this.applicationContext as? MoviesApplication)?.moviesSearchPresenter
+        moviesSearchPresenter = (this.application as? MoviesApplication)?.moviesSearchPresenter
 
         if (moviesSearchPresenter == null) {
             moviesSearchPresenter = Creator.provideMoviesSearchPresenter(
-                moviesView = this,
-                context = this,
-                adapter = adapter
+                context = this.applicationContext, //устранение утечки Ссылка на уничтоженную Activity больше не хранится
             )
-            (this.applicationContext as? MoviesApplication)?.moviesSearchPresenter = moviesSearchPresenter
+            (this.application as? MoviesApplication)?.moviesSearchPresenter = moviesSearchPresenter
         }
+
+        moviesSearchPresenter?.attachView(this)
+
 
         placeholderMessage = findViewById(R.id.placeholderMessage)
         queryInput = findViewById(R.id.queryInput)
@@ -98,7 +99,7 @@ class MainActivity : Activity(), MoviesView {
     override fun onDestroy() {
         super.onDestroy()
         textWatcher?.let { queryInput.removeTextChangedListener(it) }
-        moviesSearchPresenter?.onDestroy()
+        moviesSearchPresenter?.detachView()
     }
 
     private fun clickDebounce(): Boolean {
@@ -167,6 +168,5 @@ class MainActivity : Activity(), MoviesView {
             is MoviesState.Empty -> showEmpty(state.message)
         }
     }
-
 
 }

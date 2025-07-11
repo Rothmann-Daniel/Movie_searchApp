@@ -4,8 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@drawable/kinofon"
-    android:alpha="1.0"
+    android:background="@drawable/background_movie"
+    android:alpha="0.9"
     android:fitsSystemWindows="true">
 
     <!-- Search Bar with Material Design -->

@@ -10,10 +10,10 @@ import com.example.uithread.ui.movies.model.MoviesState
 import com.example.uithread.util.Creator
 
 class MoviesSearchPresenter(
-    private val view: MoviesView,
+    private var view: MoviesView? = null,
     private val context: Context,
 ) {
-    //private val SEARCH_REQUEST_TOKEN = Any()
+
     private val moviesInteractor = Creator.provideMoviesInteractor(context)
     private val handler = Handler(Looper.getMainLooper())
     private val movies = mutableListOf<Movie>()
@@ -25,6 +25,14 @@ class MoviesSearchPresenter(
         searchRequest(newSearchText)
     }
 
+    fun attachView(view: MoviesView) {
+        this.view = view
+    }
+
+    fun detachView() {
+        this.view = null
+    }
+
     fun searchDebounce(changedText: String) {
         this.lastSearchText = changedText
         handler.removeCallbacks(searchRunnable)
@@ -34,7 +42,7 @@ class MoviesSearchPresenter(
 
     private fun searchRequest(newSearchText: String) {
         if (newSearchText.isNotEmpty()) {
-            view.render(
+            view?.render(
                 MoviesState.Loading
             )
 
@@ -48,16 +56,16 @@ class MoviesSearchPresenter(
 
                         when {
                             errorMessage != null -> {
-                                view.render(
+                                view?.render(
                                     MoviesState.Error(
                                         errorMessage = context.getString(R.string.something_went_wrong),
                                     )
                                 )
-                                view.showToast(errorMessage)
+                                view?.showToast(errorMessage)
                             }
 
                             movies.isEmpty() -> {
-                                view.render(
+                                view?.render(
                                     MoviesState.Empty(
                                         message = context.getString(R.string.nothing_found),
                                     )
@@ -65,7 +73,7 @@ class MoviesSearchPresenter(
                             }
 
                             else -> {
-                                view.render(
+                                view?.render(
                                     MoviesState.Content(
                                         movies = movies,
                                     )
