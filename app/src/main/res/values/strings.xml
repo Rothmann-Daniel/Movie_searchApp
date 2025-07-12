@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">UI Thread</string>
+    <string name="app_name">Movie_searchApp</string>
     <string name="nothing_found">nothing_found</string>
 
     <!-- Поиск -->
@@ -13,6 +13,8 @@
     <!-- Ошибки -->
     <string name="error_loading">Ошибка загрузки данных</string>
     <string name="something_went_wrong">Что-то пошло не так</string>
+    <string name="network_error">Нет подключения к интернету</string>
+    <string name="server_error">Ошибка соединения с сервером</string>
 
     <string name="details">Подробнее</string>
     <string name="movie_cover">Обложка фильма</string>
