@@ -9,9 +9,7 @@ import com.example.uithread.domain.api.MoviesRepository
 import com.example.uithread.domain.impl.MoviesInteractorImpl
 import com.example.uithread.presentation.movies.MoviesSearchPresenter
 import com.example.uithread.presentation.poster.PosterPresenter
-import com.example.uithread.presentation.movies.MoviesView
 import com.example.uithread.presentation.poster.PosterView
-import com.example.uithread.ui.movies.MoviesAdapter
 
 object Creator {
     private fun getMoviesRepository(context: Context): MoviesRepository {
@@ -22,12 +20,8 @@ object Creator {
         return MoviesInteractorImpl(getMoviesRepository(context))
     }
 
-    fun provideMoviesSearchPresenter(
-        context: Context,
-    ): MoviesSearchPresenter {
-        return MoviesSearchPresenter(
-            context = context,
-        )
+    fun provideMoviesSearchPresenter(context: Context): MoviesSearchPresenter {
+        return MoviesSearchPresenter(context)
     }
 
     fun providePosterPresenter(
